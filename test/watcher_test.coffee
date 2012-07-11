@@ -1,0 +1,3 @@
+describe "Watcher", ->
+  it "checkChange"
+
