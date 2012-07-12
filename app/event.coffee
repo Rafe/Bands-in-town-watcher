@@ -13,14 +13,14 @@ module.exports = class Event
         log.error "#{err}" if err
     callback(@) if callback
 
-  isNew: (createEvent, checkChanged)->
+  isNew: (createEvent, checkEvent)->
     redis.exists @id, (err, reply)=>
       log.error "#{err}" if err
 
       if reply is 0
         createEvent(@)
       else
-        checkChanged(@)
+        checkEvent(@)
 
   # check the event value is same or not, if not, send email to
   # notify users

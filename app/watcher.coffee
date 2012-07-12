@@ -49,13 +49,13 @@ module.exports = class Watcher
       event.save (event)->
         log.info "saved #{event.id}"
 
-    checkChanged = (event)=>
+    checkEvent = (event)=>
       event.changed (event, origin)=>
         log.debug "event changed: #{event.id}"
         event.save ()=>
           @notify(event, origin)
 
-    event.isNew(createEvent, checkChanged)
+    event.isNew(createEvent, checkEvent)
 
   notify: (event, origin)->
     title = "Event Changed:: #{event.title}"
