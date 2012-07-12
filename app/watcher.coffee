@@ -42,6 +42,8 @@ class Watcher
   checkChange:(raw_event)->
     event = Event.parse(raw_event)
 
+    return unless event?
+
     event.isNew ()->
       event.save (event)->
         log.info "saved #{event.id}"

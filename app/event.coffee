@@ -1,13 +1,7 @@
 
 log = require './logger'
 
-if process.env.REDISTOGO_URL
-  rtg = require('url').parse(process.env.REDISTOGO_URL)
-  redis = require('redis').createClient(rtg.port, rtg.hostname)
-  redis.auth(rtg.auth.split(":")[1])
-else
-  redis = require('redis').createClient()
-
+redis = require('./db')
 class Event
   key: 'id'
   attributes: ['title', 'artists', 'venue', 'datetime']
@@ -15,6 +9,7 @@ class Event
   constructor:(@id, @title, @artists, @venue, @datetime)->
 
   save:(callback)->
+    console.log(@id)
     for attr in @attributes
       redis.hset @id, attr, @[attr], (err, replies)->
         log.error "#{err}" if err
