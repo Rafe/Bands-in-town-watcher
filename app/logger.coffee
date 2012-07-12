@@ -1,4 +1,2 @@
 Log = require 'log'
-logger = new Log('debug')
-
-module.exports = logger
+module.exports = new Log('info')

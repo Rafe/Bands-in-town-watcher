@@ -1,13 +1,12 @@
 request = require 'request'
-Event = require './event'
-log = require './logger'
-Notifier = require('./notifier')
-config = require '../config'
-ck = require 'coffeekup'
-
+coffeekup = require 'coffeekup'
 CronJob = require('cron').CronJob
 
-class Watcher
+log = require './logger'
+Notifier = require('./notifier')
+Event = require './event'
+
+module.exports = class Watcher
   #api: '(seconds minutes hour day-of-month month day-of-week)'
   #examples:
   # "*/5 * * * * *" => every 5 sec
@@ -68,11 +67,9 @@ class Watcher
           if @origin[attr] isnt @event[attr]
             li "#{attr}: #{@origin[attr]} => #{@event[attr]}"
 
-    body = ck.render(template, event: event, origin: origin)
+    body = coffeekup.render(template, event: event, origin: origin)
 
     @notifier.send title, body, (err)->
       log.error("#{err}") if err
 
       log.info("notify mail sended for #{event.title}")
-
-module.exports = Watcher

@@ -1,8 +1,7 @@
-
 log = require './logger'
-
 redis = require './db'
-class Event
+
+module.exports = class Event
   key: 'id'
   attributes: ['title', 'artists', 'venue', 'datetime']
 
@@ -35,5 +34,3 @@ class Event
 
 Event.parse = (json)->
   new Event(json.id, json.title, JSON.stringify(json.artists), json.venue.name, json.datetime)
-
-module.exports = Event

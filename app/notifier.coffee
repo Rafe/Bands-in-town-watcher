@@ -1,4 +1,3 @@
-config = require '../config'
 Mail = require('mail').Mail
 
 module.exports = class Notifier
