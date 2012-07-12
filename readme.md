@@ -6,14 +6,14 @@ Tool to watch the bands in town api and notify users when date or venue changed
 
 1. fork the project, change the config/index.coffee to your app_id and bands you want to watch
 
-2. install [redistogo] addon(http://redistogo.com/)
-
-        heroku addons:add redistogo
-
-3. deploy to [heroku](heroku.com)
+2. deploy to [heroku](heroku.com)
 
         heroku apps:create [appname]
         git push heroku master
+
+3. install [redistogo](http://redistogo.com/) addon
+
+        heroku addons:add redistogo
 
 4. set the mail address and target
 
