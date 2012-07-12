@@ -1,14 +1,18 @@
 config = require '../config'
-mail = require('mail').Mail
-  host: config.host
-  username: config.username
-  password: config.password
+Mail = require('mail').Mail
 
-exports.send = (title, body, callback)->
-  mail.message
-    from: config.username
-    to: config.to
-    subject: title
-    'content-type': 'text/html'
-    charset: 'utf-8'
-  .body(body).send callback
+module.exports = class Notifier
+  constructor: (@config)->
+    @mailer = Mail
+      host: @config.host
+      username: @config.username
+      password: @config.password
+
+  send: (title, body, callback)->
+    @mailer.message
+      from: @config.username
+      to: @config.to
+      subject: title
+      'content-type': 'text/html'
+      charset: 'utf-8'
+    .body(body).send callback

@@ -1,38 +1,43 @@
 request = require 'request'
 Event = require './event'
 log = require './logger'
-send = require('./notifier').send
+Notifier = require('./notifier')
 config = require '../config'
 ck = require 'coffeekup'
 
 CronJob = require('cron').CronJob
 
 class Watcher
-  constructor:()->
-    @createJob(config.schedule, config.location, @watch).start()
-
   #api: '(seconds minutes hour day-of-month month day-of-week)'
   #examples:
   # "*/5 * * * * *" => every 5 sec
   # "* * * * * 1-5" => monday to friday
   # "0 0 * * * *" => every hour
-  createJob:(schedule, location, process)->
-    new CronJob schedule, process, null, true, location
+  constructor:(config)->
+    watch = ()=>
+      @watch config, @checkChange
+    @job = new CronJob config.schedule, watch, null, true, config.location
+    @notifier = new Notifier(config)
 
-  watch:()=>
+  start: ->
+    @job.start()
+
+  watch:(config, callback)=>
     artist = encodeURIComponent(config.artist)
     url = "http://api.bandsintown.com/artists/#{artist}/events.json"
     params =
       'format': 'json'
-      'api_version': '2.0'
+      'api_version': config.api_version
       'app_id': config.app_id
 
     log.info "checking bands in town events: #{url}"
 
-    request.get url, qs: params, (err, res, body)=>
+    request.get url, qs: params, (err, res, body)->
+      log.error "#{err}" if err
+
       events = JSON.parse(body)
       for event in events
-        @checkChange(event)
+        callback(event)
 
   checkChange:(raw_event)->
     event = Event.parse(raw_event)
@@ -58,7 +63,7 @@ class Watcher
 
     body = ck.render(template, event: event, original: original)
 
-    send title, body, (err)->
+    @notifier.send title, body, (err)->
       log.error("#{err}") if err
 
       log.info("notify mail sended for #{event.title}")
