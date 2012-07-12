@@ -1,7 +1,7 @@
 
 module.exports =
   #job settings:
-  schedule: "*/5 * * * * *"
+  schedule: "*/10 * * * * *"
   location: "America/New_York"
 
   #api settings:
