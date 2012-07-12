@@ -34,3 +34,9 @@ describe "Watcher", ->
         done()
 
     watcher.notify(event, event2)
+
+  it "notify send email with event", ->
+    event = new Event(123, 'test title', 'test', 'test', 'test')
+    event2 = new Event(123, 'test title', 'test2', 'test', 'test')
+
+    watcher.notify(event, event2)

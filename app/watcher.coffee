@@ -16,7 +16,9 @@ class Watcher
   constructor:(config)->
     watch = ()=>
       @watch config, @checkChange
+
     @job = new CronJob config.schedule, watch, null, true, config.location
+
     @notifier = new Notifier(config)
 
   start: ->
@@ -39,31 +41,34 @@ class Watcher
       for event in events
         callback(event)
 
-  checkChange:(raw_event)->
+  checkChange: (raw_event)=>
     event = Event.parse(raw_event)
 
     return unless event?
 
-    event.isNew ()->
+    createEvent = (event)->
       event.save (event)->
         log.info "saved #{event.id}"
 
-    event.changed (event, original)=>
-      log.debug "event changed: #{event.id}"
-      event.save()
-      @notify(event, original)
+    checkChanged = (event)=>
+      event.changed (event, origin)=>
+        log.debug "event changed: #{event.id}"
+        event.save ()=>
+          @notify(event, origin)
 
-  notify: (event, original)->
+    event.isNew(createEvent, checkChanged)
+
+  notify: (event, origin)->
     title = "Event Changed:: #{event.title}"
 
     template = ->
       h2 "Event: #{@event.title}"
       ul ->
         for attr in @event.attributes
-          if @original[attr] isnt @event[attr]
-            li "#{attr}: #{@original[attr]} => #{@event[attr]}"
+          if @origin[attr] isnt @event[attr]
+            li "#{attr}: #{@origin[attr]} => #{@event[attr]}"
 
-    body = ck.render(template, event: event, original: original)
+    body = ck.render(template, event: event, origin: origin)
 
     @notifier.send title, body, (err)->
       log.error("#{err}") if err
