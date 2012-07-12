@@ -21,9 +21,7 @@ describe "Watcher", ->
     count = 0
     watcher.watch config, (event)->
       event.should.have.property('id')
-      count += 1
-      if count == 5
-        done()
+      done() if count++ is 5
 
   it "send back changed value", (done)->
     event = new Event(123, 'test title', 'test', 'test', 'test')
