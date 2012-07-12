@@ -1,7 +1,7 @@
 
 log = require './logger'
 
-redis = require('./db')
+redis = require './db'
 class Event
   key: 'id'
   attributes: ['title', 'artists', 'venue', 'datetime']
