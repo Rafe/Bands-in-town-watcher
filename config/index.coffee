@@ -13,4 +13,4 @@ module.exports =
   host: 'smtp.gmail.com'
   username: process.env['USERNAME']
   password: process.env['PASSWORD']
-  to: 'team@spling.com'
+  to: process.env['TO']
