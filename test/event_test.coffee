@@ -31,15 +31,6 @@ describe 'Event', ->
         reply.datetime.should.equal '2012-3-4'
         done()
 
-  it "isNew should check existing id in redis and run createEvent callback", (done)->
-    createEvent = ()-> done()
-    event.isNew createEvent
-
-  it "isNew should check existing id in redis and checkEvent callback", (done)->
-    checkEvent = ()-> done()
-    event.save (err, reply)->
-      event.isNew null, checkEvent
-
   it "changed should check attributes changed and run callback", (done)->
     redis.hset event.id, 'title', 'test', (err, reply)->
       event.changed (event, origin)->

@@ -13,12 +13,14 @@ module.exports = class Watcher
   # "* * * * * 1-5" => monday to friday
   # "0 0 * * * *" => every hour
   constructor:(config)->
+    @notifier = new Notifier(config)
+
     watch = ()=>
-      @watch config, @checkChange
+      @watch config, (data)=>
+        event = Event.parse(data)
+        event.changed @notify if event?
 
     @job = new CronJob config.schedule, watch, null, true, config.location
-
-    @notifier = new Notifier(config)
 
   start: ->
     @job.start()
@@ -37,25 +39,7 @@ module.exports = class Watcher
       log.error "#{err}" if err
 
       events = JSON.parse(body)
-      for event in events
-        callback(event)
-
-  checkChange: (raw_event)=>
-    event = Event.parse(raw_event)
-
-    return unless event?
-
-    createEvent = (event)->
-      event.save (event)->
-        log.info "saved #{event.id}"
-
-    checkEvent = (event)=>
-      event.changed (event, origin)=>
-        log.debug "event changed: #{event.id}"
-        event.save ()=>
-          @notify(event, origin)
-
-    event.isNew(createEvent, checkEvent)
+      events.forEach callback
 
   notify: (event, origin)->
     title = "Event Changed:: #{event.title}"
