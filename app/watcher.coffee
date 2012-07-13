@@ -2,7 +2,8 @@ request = require 'request'
 coffeekup = require 'coffeekup'
 CronJob = require('cron').CronJob
 
-log = require './logger'
+Log = require 'log'
+log = new Log('info')
 Notifier = require('./notifier')
 Event = require './event'
 

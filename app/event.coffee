@@ -1,4 +1,5 @@
-log = require './logger'
+Log = require 'log'
+log = new Log('info')
 redis = require './db'
 
 module.exports = class Event
