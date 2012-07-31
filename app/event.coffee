@@ -22,17 +22,21 @@ module.exports = class Event
       log.error "#{err}" if err
 
       if reply is 0
-        @save()
+        @save (event)=>
+          callback({}, event)
       else
-        redis.hgetall @id, (err, reply)=>
-          log.error "#{err}" if err
+        @check(callback)
 
-          for attr in @attributes
-            if @[attr] isnt reply[attr]
-              log.info "event changed: #{@id}"
-              @save ()=>
-                callback(@, reply)
-              return
+  check: (callback)->
+    redis.hgetall @id, (err, reply)=>
+      log.error "#{err}" if err
+
+      for attr in @attributes
+        if @[attr] isnt reply[attr]
+          log.info "event changed: #{@id}"
+          @save ()=>
+            callback(@, reply)
+          return
 
 Event.parse = (json)->
   new Event(json.id, json.title, JSON.stringify(json.artists), json.venue.name, json.datetime)

@@ -1,6 +1,5 @@
 Event = require '../app/event'
 redis = require('redis').createClient()
-assert = require 'assert'
 
 describe 'Event', ->
   event = ""

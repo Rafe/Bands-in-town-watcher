@@ -1,4 +1,3 @@
-
 module.exports =
   #job settings:
   schedule: "0 */30 * * * *"
