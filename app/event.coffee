@@ -23,7 +23,7 @@ module.exports = class Event
 
       if reply is 0
         @save (event)=>
-          callback({}, event)
+          callback(event, {})
       else
         @check(callback)
 
