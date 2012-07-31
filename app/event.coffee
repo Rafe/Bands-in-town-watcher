@@ -22,6 +22,7 @@ module.exports = class Event
       log.error "#{err}" if err
 
       if reply is 0
+        log.info "new event: #{@id}"
         @save (event)=>
           callback(event, {})
       else
